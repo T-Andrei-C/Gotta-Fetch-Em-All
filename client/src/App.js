@@ -23,6 +23,7 @@ function App() {
 
   const clickHandle = (e) => {
     setPokemon("https://pokeapi.co/api/v2/location-area/" + e.target.id);
+    console.log(pokemon);
     setClickState(false);
     //console.log("https://pokeapi.co/api/v2/location-area/" + e.target.id);
   };

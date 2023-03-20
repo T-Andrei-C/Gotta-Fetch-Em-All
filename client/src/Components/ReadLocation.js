@@ -2,10 +2,15 @@ function ReadLocation(props){
     const location = props.name;
     const clickFunction = props.clickFunction
     return (
-        <div onClick={clickFunction}>
-            <h2 id={props.id}>{location}</h2>
-        </div>
+
+
+        <div >
+        <button onClick={clickFunction} id={props.id}>{location}</button>
+        </div> 
+        
+      
     )
 }
 
-export default ReadLocation ;
+export default ReadLocation ; 
+
