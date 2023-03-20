@@ -1,8 +1,9 @@
 function ReadLocation(props){
     const location = props.name;
+    const clickFunction = props.clickFunction
     return (
-        <div>
-            <h2>{location}</h2>
+        <div onClick={clickFunction}>
+            <h2 id={props.id}>{location}</h2>
         </div>
     )
 }
