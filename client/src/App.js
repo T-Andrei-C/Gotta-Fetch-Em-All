@@ -14,6 +14,7 @@ function App() {
   const [pokemon, setPokemon] = useState([]);
   const [clicked, setClickState] = useState(true);
   const [NoPokemon, setNoPokemon] = useState(true);
+  const [MyPokemon, setMyPokemon] = useState([]);
 
   const userPokemons = [
     "https://pokeapi.co/api/v2/pokemon/bulbasaur",
@@ -21,11 +22,12 @@ function App() {
     "https://pokeapi.co/api/v2/pokemon/poliwhirl",
   ];
 
-  async function FetchPokemon (url) {
-    let data = await fetch(url)
-    let data2 = await data.json()
-    console.log(data2)
-    return data2
+  async function FetchPokemon(url) {
+    let data = await fetch(url);
+    let data2 = await data.json();
+    //console.log(data2)
+    //setMyPokemon(data2);
+    return data2;
   }
 
   async function locationInfo(link) {
@@ -70,8 +72,16 @@ function App() {
     try {
       const response = await fetch(link);
       const data = await response.json();
-      console.log(data.pokemon_encounters.length);
+      //console.log(data.pokemon_encounters.length);
       if (data.pokemon_encounters.length > 0) {
+        userPokemons.map(async (pokemon) => {
+          let data = await FetchPokemon(pokemon);
+          MyPokemon.push(data);
+          //datePokemoni.push(MyPokemon)
+          setMyPokemon([...MyPokemon])
+          console.log(MyPokemon);
+        });
+
         return data.pokemon_encounters[
           Math.floor(Math.random() * data.pokemon_encounters.length)
         ].pokemon.url;
@@ -92,6 +102,11 @@ function App() {
     setPokemon(z);
     setClickState(false);
   };
+
+  function MyPokemonClickHandler () {
+    
+  }
+
 
   return (
     <div className="App">
@@ -115,16 +130,20 @@ function App() {
           />
         ))
       ) : NoPokemon ? (
-        <ScreenPokemon
-          photo={pokemon.sprites.other.dream_world.front_default}
-          name={pokemon.name}
-        />,
-        userPokemons.map((pokemon) => (
-          <OurPokemons 
-            PokemonName={() => FetchPokemon(pokemon).name}
-            PokemonPhoto={() => FetchPokemon(pokemon).sprites.other.dream_world.front_default}
+        <div>
+          <ScreenPokemon
+            photo={pokemon.sprites.other.dream_world.front_default}
+            name={pokemon.name}
           />
-        ))
+        {MyPokemon.map((pokemon) => (
+          <OurPokemons
+            PokemonName={pokemon.name}
+            PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
+            key={pokemon.name}
+            MyPokemonClick={MyPokemonClickHandler}
+          />
+        ))}
+        </div>
       ) : (
         <NoPokemonAvailable
           backHandle={() => {
