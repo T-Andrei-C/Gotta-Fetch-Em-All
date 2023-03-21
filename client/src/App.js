@@ -8,17 +8,15 @@ function App() {
   const [pokemon, setPokemon] = useState([]);
   const [clicked, setClickState] = useState(true);
 
-  async function pokemonInfo (link){
+  async function pokemonInfo(link) {
     try {
       const response = await fetch(link);
       const data = await response.json();
-      setPokemon(data);
+      return data;
     } catch (error) {
       console.error(error);
     }
   }
-  
-
 
   useEffect(() => {
     async function fetchLocation() {
@@ -33,26 +31,36 @@ function App() {
     }
     fetchLocation();
   }, []);
-  
-  const clickHandle = async(e) => {
-    try {
-      const response = await fetch("https://pokeapi.co/api/v2/location-area/" + e.target.id);
-      const data = await response.json();
-      // console.log(data.pokemon_encounters[Math.floor(Math.random() * data.pokemon_encounters.length)].pokemon.url);
-      setLocation(data);
-      setClickState(false);
-      await pokemonInfo(data.pokemon_encounters[Math.floor(Math.random() * data.pokemon_encounters.length)].pokemon.url)
 
-      
+  const clickHandle = async (e) => {
+    try {
+      const response = await fetch(
+        "https://pokeapi.co/api/v2/location-area/" + e.target.id
+      );
+      const data = await response.json();
+      console.log(data.pokemon_encounters.length)
+      return data.pokemon_encounters[
+        Math.floor(Math.random() * data.pokemon_encounters.length)
+      ].pokemon.url;
+      // console.log(data.pokemon_encounters[Math.floor(Math.random() * data.pokemon_encounters.length)].pokemon.url);
+      // setLocation(data);
+      // setClickState(false);
+      // await pokemonInfo(data.pokemon_encounters[Math.floor(Math.random() * data.pokemon_encounters.length)].pokemon.url)
       // takePhoto(data.pokemon_encounters[Math.floor(Math.random() * data.pokemon_encounters.length)].pokemon.url)
     } catch (error) {
       console.error(error);
     }
-    
 
     //console.log("https://pokeapi.co/api/v2/location-area/" + e.target.id);
   };
-  console.log(pokemon.sprites)
+  // console.log(pokemon.sprites)
+
+  const a = async (e) => {
+    const b = await clickHandle(e);
+    const z = await pokemonInfo(b);
+    setPokemon(z);
+    setClickState(false);
+  };
 
   return (
     <div className="App">
@@ -61,17 +69,16 @@ function App() {
         locations.results.map((location, index) => (
           <ReadLocation
             name={location.name}
-            clickFunction={clickHandle}
+            clickFunction={a}
             id={index + 1}
             key={index}
           />
         ))
       ) : (
-        <ScreenPokemon 
-        photo ={pokemon.sprites.front_default}
-        name = {pokemon.name}
+        <ScreenPokemon
+          photo={pokemon.sprites.other.dream_world.front_default}
+          name={pokemon.name}
         />
-
       )}
     </div>
   );
