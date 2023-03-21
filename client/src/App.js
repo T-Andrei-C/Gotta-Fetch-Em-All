@@ -4,6 +4,7 @@ import ReadLocation from "./Components/ReadLocation";
 import ScreenPokemon from "./Components/ScreenPokemon";
 import NextAndPrevButton from "./Components/NextAndPrevButton";
 import NoPokemonAvailable from "./NoPokemonAvaible";
+import OurPokemons from "./Components/OurPokemons";
 
 function App() {
   const [linkLocation, setLinkLocation] = useState(
@@ -13,6 +14,19 @@ function App() {
   const [pokemon, setPokemon] = useState([]);
   const [clicked, setClickState] = useState(true);
   const [NoPokemon, setNoPokemon] = useState(true);
+
+  const userPokemons = [
+    "https://pokeapi.co/api/v2/pokemon/bulbasaur",
+    "https://pokeapi.co/api/v2/pokemon/charizard",
+    "https://pokeapi.co/api/v2/pokemon/poliwhirl",
+  ];
+
+  async function FetchPokemon (url) {
+    let data = await fetch(url)
+    let data2 = await data.json()
+    console.log(data2)
+    return data2
+  }
 
   async function locationInfo(link) {
     try {
@@ -104,7 +118,13 @@ function App() {
         <ScreenPokemon
           photo={pokemon.sprites.other.dream_world.front_default}
           name={pokemon.name}
-        />
+        />,
+        userPokemons.map((pokemon) => (
+          <OurPokemons 
+            PokemonName={() => FetchPokemon(pokemon).name}
+            PokemonPhoto={() => FetchPokemon(pokemon).sprites.other.dream_world.front_default}
+          />
+        ))
       ) : (
         <NoPokemonAvailable
           backHandle={() => {
