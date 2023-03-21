@@ -137,14 +137,18 @@ function App() {
             photo={pokemon.sprites.other.dream_world.front_default}
             name={pokemon.name}
           />
-        {MyPokemon.map((pokemon,index) => (
+        { SelectedPokemon === null ? 
+        MyPokemon.map((pokemon,index) => (
           <OurPokemons
             PokemonName={pokemon.name}
             PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
             key={pokemon.name}
             MyPokemonClick={() => MyPokemonClickHandler(index)}
           />
-        ))}
+        )): <OurPokemons 
+        PokemonName={MyPokemon[SelectedPokemon].name}
+        PokemonPhoto={MyPokemon[SelectedPokemon].sprites.other.dream_world.front_default}
+        />} 
         </div>
       ) : (
         <NoPokemonAvailable
