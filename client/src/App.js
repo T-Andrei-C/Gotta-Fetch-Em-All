@@ -15,6 +15,7 @@ function App() {
   const [clicked, setClickState] = useState(true);
   const [NoPokemon, setNoPokemon] = useState(true);
   const [MyPokemon, setMyPokemon] = useState([]);
+  const [SelectedPokemon, setSelectedPokemon] = useState(null);
 
   const userPokemons = [
     "https://pokeapi.co/api/v2/pokemon/bulbasaur",
@@ -103,8 +104,9 @@ function App() {
     setClickState(false);
   };
 
-  function MyPokemonClickHandler () {
-    
+  function MyPokemonClickHandler (index) {
+    setSelectedPokemon(index)
+    //console.log(SelectedPokemon)
   }
 
 
@@ -135,12 +137,12 @@ function App() {
             photo={pokemon.sprites.other.dream_world.front_default}
             name={pokemon.name}
           />
-        {MyPokemon.map((pokemon) => (
+        {MyPokemon.map((pokemon,index) => (
           <OurPokemons
             PokemonName={pokemon.name}
             PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
             key={pokemon.name}
-            MyPokemonClick={MyPokemonClickHandler}
+            MyPokemonClick={() => MyPokemonClickHandler(index)}
           />
         ))}
         </div>
