@@ -20,12 +20,11 @@ function App() {
   const [enemyPokemonHealth, setEnemyPokemonHealth] = useState(null);
   const [myPokemonHealth, setMyPokemonHealth] = useState(null);
   const [winGame, setWinGame] = useState(null);
-
-  const userPokemons = [
+  const [userPokemons, setUserPokemons] = useState([
     "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
     "https://pokeapi.co/api/v2/pokemon/raichu",
-  ];
+  ]);
 
   async function FetchPokemon(url) {
     let data = await fetch(url);
@@ -148,11 +147,23 @@ function App() {
           setEnemyPokemonHealth(newHealth);
           if (newHealth <= 0) {
             setWinGame("noi");
+            userPokemons.push("https://pokeapi.co/api/v2/pokemon/"+pokemon.name)
+            setUserPokemons([...new Set(userPokemons)])
+            setNoPokemon(true);
+            setClickState(true);
+            setWinGame(null);
+            setSelectedPokemon(null);
+            setMyPokemon([]);
           }
         } else {
           setMyPokemonHealth(newHealth);
           if (newHealth <= 0) {
             setWinGame("voi");
+            setNoPokemon(true);
+            setClickState(true);
+            setWinGame(null);
+            setSelectedPokemon(null);
+            setMyPokemon([]);
           }
         }
 
@@ -162,6 +173,7 @@ function App() {
   }
 
   console.log(winGame);
+  console.log(userPokemons)
   return (
     <div className="App">
       {clicked ? (
