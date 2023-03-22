@@ -6,6 +6,7 @@ import NextAndPrevButton from "./Components/NextAndPrevButton";
 import NoPokemonAvailable from "./NoPokemonAvaible";
 import OurPokemons from "./Components/OurPokemons";
 
+
 function App() {
   const [linkLocation, setLinkLocation] = useState(
     "https://pokeapi.co/api/v2/location"
@@ -19,11 +20,13 @@ function App() {
   const [yourTurn, setYourTurn] = useState(true);
   const [enemyPokemonHealth, setEnemyPokemonHealth] = useState(null);
   const [myPokemonHealth, setMyPokemonHealth] = useState(null);
+  const [winGame, setWinGame] = useState(null)
 
   const userPokemons = [
-    "https://pokeapi.co/api/v2/pokemon/bulbasaur",
+    "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
-    "https://pokeapi.co/api/v2/pokemon/poliwhirl",
+    "https://pokeapi.co/api/v2/pokemon/raichu"
+
   ];
 
   async function FetchPokemon(url) {
@@ -106,8 +109,8 @@ function App() {
 
 
 
-
-    setEnemyPokemonHealth(z.stats[0].base_stat)
+    if(winGame === null)
+   { setEnemyPokemonHealth(z.stats[0].base_stat)}
 
 
 
@@ -118,16 +121,17 @@ function App() {
     setSelectedPokemon(index);
 
 
-
-    setMyPokemonHealth(
+    if(winGame===null)
+{    setMyPokemonHealth(
       MyPokemon[index].stats[0].base_stat
-    )
+    )}
 
 
     //console.log(SelectedPokemon)
   }
 
   function attack(attackingPokemon, defendingPokemon) {
+   if(winGame === null){
     let damage = attackingPokemon.stats[1].base_stat;
     let defense = defendingPokemon.stats[2].base_stat;
     let health;
@@ -151,17 +155,19 @@ function App() {
 
     if (yourTurn) {
       setEnemyPokemonHealth(newHealth);
+      if(newHealth <= 0)
+      {setWinGame("noi")}
     } else {
       setMyPokemonHealth(newHealth);
+      if(newHealth <= 0)
+     {setWinGame("voi")} 
     }
 
-    if (yourTurn !== null && newHealth > 0) {
       setYourTurn(!yourTurn);
-    } else {
-      setYourTurn(null);
-    }
-  }
 
+    }}
+  
+    console.log(winGame)
   return (
     <div className="App">
       {clicked ? (
