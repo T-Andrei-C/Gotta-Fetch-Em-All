@@ -6,7 +6,6 @@ import NextAndPrevButton from "./Components/NextAndPrevButton";
 import NoPokemonAvailable from "./NoPokemonAvaible";
 import OurPokemons from "./Components/OurPokemons";
 
-
 function App() {
   const [linkLocation, setLinkLocation] = useState(
     "https://pokeapi.co/api/v2/location"
@@ -20,13 +19,12 @@ function App() {
   const [yourTurn, setYourTurn] = useState(true);
   const [enemyPokemonHealth, setEnemyPokemonHealth] = useState(null);
   const [myPokemonHealth, setMyPokemonHealth] = useState(null);
-  const [winGame, setWinGame] = useState(null)
+  const [winGame, setWinGame] = useState(null);
 
   const userPokemons = [
     "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
-    "https://pokeapi.co/api/v2/pokemon/raichu"
-
+    "https://pokeapi.co/api/v2/pokemon/raichu",
   ];
 
   async function FetchPokemon(url) {
@@ -107,67 +105,67 @@ function App() {
     const z = await pokemonInfo(b);
     setPokemon(z);
 
-
-
-    if(winGame === null)
-   { setEnemyPokemonHealth(z.stats[0].base_stat)}
-
-
+    if (winGame === null) {
+      setEnemyPokemonHealth(z.stats[0].base_stat);
+    }
 
     setClickState(false);
   };
 
   function MyPokemonClickHandler(index) {
-    setSelectedPokemon(index);
+    if (SelectedPokemon !== index) {
+      setSelectedPokemon(index);
+    }
 
-
-    if(winGame===null)
-{    setMyPokemonHealth(
-      MyPokemon[index].stats[0].base_stat
-    )}
-
+    if (winGame === null) {
+      setMyPokemonHealth(MyPokemon[index].stats[0].base_stat);
+    }
 
     //console.log(SelectedPokemon)
   }
 
   function attack(attackingPokemon, defendingPokemon) {
-   if(winGame === null){
-    let damage = attackingPokemon.stats[1].base_stat;
-    let defense = defendingPokemon.stats[2].base_stat;
-    let health;
-    let random = Math.floor(Math.random() * 38 + 217);
+    if (winGame === null) {
+      setTimeout(() => {
+        let damage = attackingPokemon.stats[1].base_stat;
+        let defense = defendingPokemon.stats[2].base_stat;
+        let health;
+        let random = Math.floor(Math.random() * 38 + 217);
 
-    if (yourTurn) {
-      health = enemyPokemonHealth;
-    } else {
-      health = myPokemonHealth;
+        if (yourTurn) {
+          health = enemyPokemonHealth;
+        } else {
+          health = myPokemonHealth;
+        }
+
+        console.log(health);
+
+        let formula = Math.floor(
+          ((((2 / 5 + 2) * damage * 60) / defense / 50 + 2) * random) / 255
+        );
+
+        console.log(formula);
+        let newHealth = health - formula;
+        console.log(newHealth);
+
+        if (yourTurn) {
+          setEnemyPokemonHealth(newHealth);
+          if (newHealth <= 0) {
+            setWinGame("noi");
+          }
+        } else {
+          setMyPokemonHealth(newHealth);
+          if (newHealth <= 0) {
+            setWinGame("voi");
+          }
+        }
+
+        setYourTurn(!yourTurn);
+      }, 500);
     }
+  }
 
-    console.log(health);
-
-    let formula = Math.floor(
-      ((((2 / 5 + 2) * damage * 60) / defense / 50 + 2) * random) / 255
-    );
-
-    console.log(formula);
-    let newHealth = health - formula;
-    console.log(newHealth);
-
-    if (yourTurn) {
-      setEnemyPokemonHealth(newHealth);
-      if(newHealth <= 0)
-      {setWinGame("noi")}
-    } else {
-      setMyPokemonHealth(newHealth);
-      if(newHealth <= 0)
-     {setWinGame("voi")} 
-    }
-
-      setYourTurn(!yourTurn);
-
-    }}
-  
-    console.log(winGame)
+  console.log(winGame);
   return (
     <div className="App">
       {clicked ? (
