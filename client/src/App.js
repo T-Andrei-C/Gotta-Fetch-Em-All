@@ -104,11 +104,6 @@ function App() {
     const b = await clickHandle(l);
     const z = await pokemonInfo(b);
     setPokemon(z);
-
-    if (winGame === null) {
-      setEnemyPokemonHealth(z.stats[0].base_stat);
-    }
-
     setClickState(false);
   };
 
@@ -119,6 +114,7 @@ function App() {
 
     if (winGame === null) {
       setMyPokemonHealth(MyPokemon[index].stats[0].base_stat);
+      setEnemyPokemonHealth(pokemon.stats[0].base_stat);
     }
 
     //console.log(SelectedPokemon)
