@@ -103,11 +103,27 @@ function App() {
     const b = await clickHandle(l);
     const z = await pokemonInfo(b);
     setPokemon(z);
+
+
+
+
+    setEnemyPokemonHealth(z.stats[0].base_stat)
+
+
+
     setClickState(false);
   };
 
   function MyPokemonClickHandler(index) {
     setSelectedPokemon(index);
+
+
+
+    setMyPokemonHealth(
+      MyPokemon[index].stats[0].base_stat
+    )
+
+
     //console.log(SelectedPokemon)
   }
 
@@ -184,10 +200,6 @@ function App() {
             ))
           ) : (
             <div>
-              {setMyPokemonHealth(
-                MyPokemon[SelectedPokemon].stats[0].base_stat
-              )}
-              {setEnemyPokemonHealth(pokemon).stats[0].base_stat}
               <OurPokemons
                 PokemonName={MyPokemon[SelectedPokemon].name}
                 PokemonPhoto={
