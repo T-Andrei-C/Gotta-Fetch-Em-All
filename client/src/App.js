@@ -16,6 +16,9 @@ function App() {
   const [NoPokemon, setNoPokemon] = useState(true);
   const [MyPokemon, setMyPokemon] = useState([]);
   const [SelectedPokemon, setSelectedPokemon] = useState(null);
+  const [yourTurn, setYourTurn] = useState(true);
+  const [enemyPokemonHealth, setEnemyPokemonHealth] = useState(null);
+  const [myPokemonHealth, setMyPokemonHealth] = useState(null);
 
   const userPokemons = [
     "https://pokeapi.co/api/v2/pokemon/bulbasaur",
@@ -79,8 +82,7 @@ function App() {
           let data = await FetchPokemon(pokemon);
           MyPokemon.push(data);
           //datePokemoni.push(MyPokemon)
-          setMyPokemon([...MyPokemon])
-          console.log(MyPokemon);
+          setMyPokemon([...MyPokemon]);
         });
 
         return data.pokemon_encounters[
@@ -104,11 +106,45 @@ function App() {
     setClickState(false);
   };
 
-  function MyPokemonClickHandler (index) {
-    setSelectedPokemon(index)
+  function MyPokemonClickHandler(index) {
+    setSelectedPokemon(index);
     //console.log(SelectedPokemon)
   }
 
+  function attack(attackingPokemon, defendingPokemon) {
+    let damage = attackingPokemon.stats[1].base_stat;
+    let defense = defendingPokemon.stats[2].base_stat;
+    let health;
+    let random = Math.floor(Math.random() * 38 + 217);
+
+    if (yourTurn) {
+      health = enemyPokemonHealth;
+    } else {
+      health = myPokemonHealth;
+    }
+
+    console.log(health);
+
+    let formula = Math.floor(
+      ((((2 / 5 + 2) * damage * 60) / defense / 50 + 2) * random) / 255
+    );
+
+    console.log(formula);
+    let newHealth = health - formula;
+    console.log(newHealth);
+
+    if (yourTurn) {
+      setEnemyPokemonHealth(newHealth);
+    } else {
+      setMyPokemonHealth(newHealth);
+    }
+
+    if (yourTurn !== null && newHealth > 0) {
+      setYourTurn(!yourTurn);
+    } else {
+      setYourTurn(null);
+    }
+  }
 
   return (
     <div className="App">
@@ -137,18 +173,33 @@ function App() {
             photo={pokemon.sprites.other.dream_world.front_default}
             name={pokemon.name}
           />
-        { SelectedPokemon === null ? 
-        MyPokemon.map((pokemon,index) => (
-          <OurPokemons
-            PokemonName={pokemon.name}
-            PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
-            key={pokemon.name}
-            MyPokemonClick={() => MyPokemonClickHandler(index)}
-          />
-        )): <OurPokemons 
-        PokemonName={MyPokemon[SelectedPokemon].name}
-        PokemonPhoto={MyPokemon[SelectedPokemon].sprites.other.dream_world.front_default}
-        />} 
+          {SelectedPokemon === null ? (
+            MyPokemon.map((pokemon, index) => (
+              <OurPokemons
+                PokemonName={pokemon.name}
+                PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
+                key={pokemon.name}
+                MyPokemonClick={() => MyPokemonClickHandler(index)}
+              />
+            ))
+          ) : (
+            <div>
+              {setMyPokemonHealth(
+                MyPokemon[SelectedPokemon].stats[0].base_stat
+              )}
+              {setEnemyPokemonHealth(pokemon).stats[0].base_stat}
+              <OurPokemons
+                PokemonName={MyPokemon[SelectedPokemon].name}
+                PokemonPhoto={
+                  MyPokemon[SelectedPokemon].sprites.other.dream_world
+                    .front_default
+                }
+              />
+              {yourTurn && yourTurn !== null
+                ? attack(MyPokemon[SelectedPokemon], pokemon)
+                : attack(pokemon, MyPokemon[SelectedPokemon])}
+            </div>
+          )}
         </div>
       ) : (
         <NoPokemonAvailable
