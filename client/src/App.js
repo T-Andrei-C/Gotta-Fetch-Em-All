@@ -1,10 +1,10 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
-import ReadLocation from "./Components/ReadLocation";
-import ScreenPokemon from "./Components/ScreenPokemon";
+import LocationButton from "./Components/LocationButton";
+import PokemonEncounter from "./Components/PokemonEncounter";
 import NextAndPrevButton from "./Components/NextAndPrevButton";
 import NoPokemonAvailable from "./NoPokemonAvaible";
-import OurPokemons from "./Components/OurPokemons";
+import PokemonsInventory from "./Components/PokemonsInventory";
 
 function App() {
   const [linkLocation, setLinkLocation] = useState(
@@ -24,7 +24,7 @@ function App() {
     "https://pokeapi.co/api/v2/pokemon/charizard",
     "https://pokeapi.co/api/v2/pokemon/raichu",
   ]);
-  const attackDelay = 1;
+  const attackDelay = 500;
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -148,33 +148,35 @@ function App() {
       {locationClicked ? (
         locationsData &&
         locationsData.results.map((location, index) => (
-          <ReadLocation
-            name={location.name}
+          <LocationButton
+            locationName={location.name}
             clickFunction={() => fetchMaster(location.url)}
-            id={index + 1}
             key={index}
           />
         ))
       ) : pokemonFound ? (
         <div>
-          <ScreenPokemon
+          <PokemonEncounter
             photo={pokemonEncounter.sprites.other.dream_world.front_default}
             name={pokemonEncounter.name}
           />
           {chosenPokemonIndex === null ? (
             chosenPokemon.map((pokemon, index) => (
-              <OurPokemons
-                PokemonName={pokemon.name}
-                PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
-                key={pokemon.name}
-                MyPokemonClick={() => chosenPokemonClickHandler(index)}
+              <PokemonsInventory
+                pokemonName={pokemon.name}
+                pokemonPhoto={pokemon.sprites.other.dream_world.front_default}
+                key={index}
+                chosenPokemonClick={() => chosenPokemonClickHandler(index)}
+                attack={pokemon.stats[1].base_stat}
+                health={pokemon.stats[0].base_stat}
+                defense={pokemon.stats[2].base_stat}
               />
             ))
           ) : (
             <div>
-              <OurPokemons
-                PokemonName={chosenPokemon[chosenPokemonIndex].name}
-                PokemonPhoto={
+              <PokemonsInventory
+                pokemonName={chosenPokemon[chosenPokemonIndex].name}
+                pokemonPhoto={
                   chosenPokemon[chosenPokemonIndex].sprites.other.dream_world
                     .front_default
                 }

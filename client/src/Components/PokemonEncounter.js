@@ -1,4 +1,4 @@
-function ScreenPokemon(props) {
+function pokemonEncounter(props) {
   const photo = props.photo;
   const name = props.name;
   return (
@@ -9,4 +9,4 @@ function ScreenPokemon(props) {
   );
 }
 
-export default ScreenPokemon;
+export default pokemonEncounter;
