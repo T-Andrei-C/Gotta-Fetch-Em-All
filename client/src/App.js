@@ -6,6 +6,8 @@ import NextAndPrevButton from "./Components/NextAndPrevButton";
 import NoPokemonAvailable from "./Components/NoPokemonAvaible";
 import PokemonsInventory from "./Components/PokemonsInventory";
 import ChosenPokemon from "./Components/ChosenPokemon";
+import WinGame from "./Components/WinGame";
+import LoseGame from "./Components/LoseGame";
 
 function App() {
   const [linkLocation, setLinkLocation] = useState(
@@ -104,6 +106,7 @@ function App() {
     setLocationClicked(true);
     setChosenPokemonIndex(null);
     setChosenPokemon([]);
+    setGameWon(null);
   };
 
   const attackAlgorithm = (attackingPokemon, defendingPokemon) => {
@@ -125,12 +128,14 @@ function App() {
             "https://pokeapi.co/api/v2/pokemon/" + pokemonEncounter.name
           );
           setPokemonInventory([...new Set(pokemonInventory)]);
-          resetBoard();
+          setGameWon(1)
+         // resetBoard();
         }
       } else {
         setChosenPokemonHealth(healthAfterAttack);
         if (healthAfterAttack <= 0) {
-          resetBoard();
+          setGameWon(2);
+         // resetBoard();
         }
       }
       setMyTurn(!myTurn);
@@ -139,6 +144,8 @@ function App() {
 
   return (
     <div className="App">
+      {gameWon === null ? (
+        <div>
       {locationClicked ? (
         <NextAndPrevButton
           nextHendle={() => setLinkLocation(locationsData.next)}
@@ -162,7 +169,7 @@ function App() {
           <PokemonEncounter
             photo={pokemonEncounter.sprites.other.dream_world.front_default}
             name={pokemonEncounter.name}
-            health={chosenPokemonIndex ? pokemonEncounterHealth : pokemonEncounter.stats[0].base_stat}
+            health={chosenPokemonIndex !== null? pokemonEncounterHealth : pokemonEncounter.stats[0].base_stat}
           />
           {chosenPokemonIndex === null ? (
             chosenPokemon.map((pokemon, index) => (
@@ -206,6 +213,15 @@ function App() {
           }}
         />
       )}
+      </div>
+      ): gameWon === 1 ? ( <WinGame 
+        back = {resetBoard}
+      />
+
+      ):(<LoseGame 
+        back = {resetBoard}
+      />)
+      } 
     </div>
   );
 }
