@@ -10,6 +10,9 @@ import WinGame from "./Components/WinGame";
 import LoseGame from "./Components/LoseGame";
 
 function App() {
+  const pokemonInevntoryList = ["charmander", "diglett", "meowth", "charizard", "raichu"];
+  const attackDelay = 1;
+
   const [linkLocation, setLinkLocation] = useState(
     "https://pokeapi.co/api/v2/location"
   );
@@ -22,14 +25,18 @@ function App() {
   const [myTurn, setMyTurn] = useState(true);
   const [pokemonEncounterHealth, setPokemonEncounterHealth] = useState(null);
   const [chosenPokemonHealth, setChosenPokemonHealth] = useState(null);
-  const [gameWon, setGameWon] = useState(null)
-  const [pokemonInventory, setPokemonInventory] = useState([
+  const [gameWon, setGameWon] = useState(null);
+  const [pokemonInventory, setPokemonInventory] = useState(
+    pokemonInevntoryList.map(
+      (pokemon) =>
+        (pokemon = "https://pokeapi.co/api/v2/pokemon/" + `${pokemon}`)
+    )
+  );
+  /* const [pokemonInventory, setPokemonInventory] = useState([
     "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
     "https://pokeapi.co/api/v2/pokemon/raichu",
-  ]);
-
-  const attackDelay = 500;
+  ]); */
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -128,14 +135,14 @@ function App() {
             "https://pokeapi.co/api/v2/pokemon/" + pokemonEncounter.name
           );
           setPokemonInventory([...new Set(pokemonInventory)]);
-          setGameWon(1)
-         // resetBoard();
+          setGameWon(1);
+          // resetBoard();
         }
       } else {
         setChosenPokemonHealth(healthAfterAttack);
         if (healthAfterAttack <= 0) {
           setGameWon(2);
-         // resetBoard();
+          // resetBoard();
         }
       }
       setMyTurn(!myTurn);
@@ -146,82 +153,85 @@ function App() {
     <div className="App">
       {gameWon === null ? (
         <div>
-      {locationClicked ? (
-        <NextAndPrevButton
-          nextHendle={() => setLinkLocation(locationsData.next)}
-          prevHendle={() => setLinkLocation(locationsData.previous)}
-        />
-      ) : (
-        ""
-      )}
+          {locationClicked ? (
+            <NextAndPrevButton
+              nextHendle={() => setLinkLocation(locationsData.next)}
+              prevHendle={() => setLinkLocation(locationsData.previous)}
+            />
+          ) : (
+            ""
+          )}
 
-      {locationClicked ? (
-        locationsData &&
-        locationsData.results.map((location, index) => (
-          <LocationButton
-            locationName={location.name}
-            clickFunction={() => fetchMaster(location.url)}
-            key={index}
-          />
-        ))
-      ) : pokemonFound ? (
-        <div>
-          <PokemonEncounter
-            photo={pokemonEncounter.sprites.other.dream_world.front_default}
-            name={pokemonEncounter.name}
-            health={chosenPokemonIndex !== null? pokemonEncounterHealth : pokemonEncounter.stats[0].base_stat}
-          />
-          {chosenPokemonIndex === null ? (
-            chosenPokemon.map((pokemon, index) => (
-              <PokemonsInventory
-                pokemonName={pokemon.name}
-                pokemonPhoto={pokemon.sprites.other.dream_world.front_default}
+          {locationClicked ? (
+            locationsData &&
+            locationsData.results.map((location, index) => (
+              <LocationButton
+                locationName={location.name}
+                clickFunction={() => fetchMaster(location.url)}
                 key={index}
-                chosenPokemonClick={() => chosenPokemonClickHandler(index)}
-                attack={pokemon.stats[1].base_stat}
-                health={pokemon.stats[0].base_stat}
-                defense={pokemon.stats[2].base_stat}
               />
             ))
-          ) : (
+          ) : pokemonFound ? (
             <div>
-              <ChosenPokemon
-                pokemonName={chosenPokemon[chosenPokemonIndex].name}
-                pokemonPhoto={
-                  chosenPokemon[chosenPokemonIndex].sprites.other.dream_world
-                    .front_default
+              <PokemonEncounter
+                photo={pokemonEncounter.sprites.other.dream_world.front_default}
+                name={pokemonEncounter.name}
+                health={
+                  chosenPokemonIndex !== null
+                    ? pokemonEncounterHealth
+                    : pokemonEncounter.stats[0].base_stat
                 }
-                health={chosenPokemonHealth}
               />
-              {myTurn && myTurn !== null
-                ? attackAlgorithm(
-                    chosenPokemon[chosenPokemonIndex],
-                    pokemonEncounter
-                  )
-                : attackAlgorithm(
-                    pokemonEncounter,
-                    chosenPokemon[chosenPokemonIndex]
-                  )}
+              {chosenPokemonIndex === null ? (
+                chosenPokemon.map((pokemon, index) => (
+                  <PokemonsInventory
+                    pokemonName={pokemon.name}
+                    pokemonPhoto={
+                      pokemon.sprites.other.dream_world.front_default
+                    }
+                    key={index}
+                    chosenPokemonClick={() => chosenPokemonClickHandler(index)}
+                    attack={pokemon.stats[1].base_stat}
+                    health={pokemon.stats[0].base_stat}
+                    defense={pokemon.stats[2].base_stat}
+                  />
+                ))
+              ) : (
+                <div>
+                  <ChosenPokemon
+                    pokemonName={chosenPokemon[chosenPokemonIndex].name}
+                    pokemonPhoto={
+                      chosenPokemon[chosenPokemonIndex].sprites.other
+                        .dream_world.front_default
+                    }
+                    health={chosenPokemonHealth}
+                  />
+                  {myTurn && myTurn !== null
+                    ? attackAlgorithm(
+                        chosenPokemon[chosenPokemonIndex],
+                        pokemonEncounter
+                      )
+                    : attackAlgorithm(
+                        pokemonEncounter,
+                        chosenPokemon[chosenPokemonIndex]
+                      )}
+                </div>
+              )}
             </div>
+          ) : (
+            <NoPokemonAvailable
+              backHandle={() => {
+                setPokemonFound(true);
+                setLocationClicked(true);
+              }}
+            />
           )}
         </div>
+      ) : gameWon === 1 ? (
+        <WinGame back={resetBoard} />
       ) : (
-        <NoPokemonAvailable
-          backHandle={() => {
-            setPokemonFound(true);
-            setLocationClicked(true);
-          }}
-        />
+        <LoseGame back={resetBoard} />
       )}
-      </div>
-      ): gameWon === 1 ? ( <WinGame 
-        back = {resetBoard}
-      />
-
-      ):(<LoseGame 
-        back = {resetBoard}
-      />)
-      } 
     </div>
   );
 }
