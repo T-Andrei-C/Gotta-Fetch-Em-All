@@ -6,7 +6,7 @@ function pokemonsInventory(props) {
   const health = props.health
   const defense = props.defense
   return (
-    <div>
+    <div className="col">
       <label>{pokemonName}</label>
       <img onClick={clickHandler} src={pokemonPhoto} />
       <p>Attack: {attack}</p>
