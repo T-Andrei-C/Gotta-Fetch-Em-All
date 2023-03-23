@@ -5,6 +5,7 @@ import PokemonEncounter from "./Components/PokemonEncounter";
 import NextAndPrevButton from "./Components/NextAndPrevButton";
 import NoPokemonAvailable from "./NoPokemonAvaible";
 import PokemonsInventory from "./Components/PokemonsInventory";
+import ChosenPokemon from "./Components/ChosenPokemon";
 
 function App() {
   const [linkLocation, setLinkLocation] = useState(
@@ -159,6 +160,7 @@ function App() {
           <PokemonEncounter
             photo={pokemonEncounter.sprites.other.dream_world.front_default}
             name={pokemonEncounter.name}
+            health={chosenPokemonIndex ? pokemonEncounterHealth : pokemonEncounter.stats[0].base_stat}
           />
           {chosenPokemonIndex === null ? (
             chosenPokemon.map((pokemon, index) => (
@@ -174,12 +176,13 @@ function App() {
             ))
           ) : (
             <div>
-              <PokemonsInventory
+              <ChosenPokemon
                 pokemonName={chosenPokemon[chosenPokemonIndex].name}
                 pokemonPhoto={
                   chosenPokemon[chosenPokemonIndex].sprites.other.dream_world
                     .front_default
                 }
+                health={chosenPokemonHealth}
               />
               {myTurn && myTurn !== null
                 ? attackAlgorithm(
