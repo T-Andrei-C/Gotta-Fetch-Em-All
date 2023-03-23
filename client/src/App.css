@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+#root {
+  background-color: rgb(54, 53, 53);
+}
+html {
+  background-color: rgb(54, 53, 53);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

@@ -170,7 +170,7 @@ function App() {
           )}
 
           {locationClicked ? (
-            <div className="row row-cols-5">
+            <div className="row row-cols-4">
               {locationsData &&
                 locationsData.results.map((location, index) => (
                   <LocationButton
@@ -191,7 +191,7 @@ function App() {
                     : pokemonEncounter.stats[0].base_stat
                 }
               />
-              <div className="row row-cols-3">
+              <div className="row row-cols-5">
                 {chosenPokemonIndex === null ? (
                   chosenPokemon.map((pokemon, index) => (
                     <PokemonsInventory

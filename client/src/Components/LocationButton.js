@@ -7,7 +7,7 @@ function locationButton(props) {
 
   return (
     <div className="col">
-      <button className="btn btn-outline-primary my-3" onClick={clickFunction}>
+      <button className="btn btn-light my-3" onClick={clickFunction}>
         {location}
       </button>
     </div>
