@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import LocationButton from "./Components/LocationButton";
 import PokemonEncounter from "./Components/PokemonEncounter";
 import NextAndPrevButton from "./Components/NextAndPrevButton";
-import NoPokemonAvailable from "./NoPokemonAvaible";
+import NoPokemonAvailable from "./Components/NoPokemonAvaible";
 import PokemonsInventory from "./Components/PokemonsInventory";
 import ChosenPokemon from "./Components/ChosenPokemon";
 
@@ -20,11 +20,13 @@ function App() {
   const [myTurn, setMyTurn] = useState(true);
   const [pokemonEncounterHealth, setPokemonEncounterHealth] = useState(null);
   const [chosenPokemonHealth, setChosenPokemonHealth] = useState(null);
+  const [gameWon, setGameWon] = useState(null)
   const [pokemonInventory, setPokemonInventory] = useState([
     "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
     "https://pokeapi.co/api/v2/pokemon/raichu",
   ]);
+
   const attackDelay = 500;
 
   useEffect(() => {
