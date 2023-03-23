@@ -10,23 +10,23 @@ function App() {
   const [linkLocation, setLinkLocation] = useState(
     "https://pokeapi.co/api/v2/location"
   );
-  const [locations, setLocation] = useState(null);
-  const [pokemon, setPokemon] = useState([]);
-  const [clicked, setClickState] = useState(true);
-  const [NoPokemon, setNoPokemon] = useState(true);
-  const [MyPokemon, setMyPokemon] = useState([]);
-  const [SelectedPokemon, setSelectedPokemon] = useState(null);
-  const [yourTurn, setYourTurn] = useState(true);
-  const [enemyPokemonHealth, setEnemyPokemonHealth] = useState(null);
-  const [myPokemonHealth, setMyPokemonHealth] = useState(null);
+  const [locationsData, setLocationsData] = useState(null);
+  const [pokemonEncounter, setPokemonEncounter] = useState([]);
+  const [locationClicked, setLocationClicked] = useState(true);
+  const [noPokemonSelected, setNoPokemonSelected] = useState(true);
+  const [chosenPokemon, setChosenPokemon] = useState([]);
+  const [chosenPokemonIndex, setChosenPokemonIndex] = useState(null);
+  const [myTurn, setMyTurn] = useState(true);
+  const [pokemonEncounterHealth, setPokemonEncounterHealth] = useState(null);
+  const [chosenPokemonHealth, setChosenPokemonHealth] = useState(null);
   const [winGame, setWinGame] = useState(null);
-  const [userPokemons, setUserPokemons] = useState([
+  const [pokemonInventory, setPokemonInventory] = useState([
     "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
     "https://pokeapi.co/api/v2/pokemon/raichu",
   ]);
 
-  async function FetchPokemon(url) {
+  const FetchPokemon = async (url) => {
     let data = await fetch(url);
     let data2 = await data.json();
     //console.log(data2)
@@ -41,7 +41,7 @@ function App() {
       // console.log(data.areas[Math.floor(Math.random() * data.areas.length)].url)
       if (data.areas.length > 0) {
         return data.areas[Math.floor(Math.random() * data.areas.length)].url;
-      } else setNoPokemon(false);
+      } else setNoPokemonSelected(false);
 
       // return data;
     } catch (error) {
@@ -64,7 +64,7 @@ function App() {
         const response = await fetch(linkLocation);
         const data = await response.json();
         //   console.log(data);
-        setLocation(data);
+        setLocationsData(data);
       } catch (error) {
         console.error(error);
       }
@@ -78,17 +78,17 @@ function App() {
       const data = await response.json();
       //console.log(data.pokemon_encounters.length);
       if (data.pokemon_encounters.length > 0) {
-        userPokemons.map(async (pokemon) => {
+        pokemonInventory.map(async (pokemon) => {
           let data = await FetchPokemon(pokemon);
-          MyPokemon.push(data);
+          chosenPokemon.push(data);
           //datePokemoni.push(MyPokemon)
-          setMyPokemon([...MyPokemon]);
+          setChosenPokemon([...chosenPokemon]);
         });
 
         return data.pokemon_encounters[
           Math.floor(Math.random() * data.pokemon_encounters.length)
         ].pokemon.url;
-      } else setNoPokemon(false);
+      } else setNoPokemonSelected(false);
     } catch (error) {
       console.error(error);
     }
@@ -102,18 +102,18 @@ function App() {
     // await locationInfo(location)
     const b = await clickHandle(l);
     const z = await pokemonInfo(b);
-    setPokemon(z);
-    setClickState(false);
+    setPokemonEncounter(z);
+    setLocationClicked(false);
   };
 
   function MyPokemonClickHandler(index) {
-    if (SelectedPokemon !== index) {
-      setSelectedPokemon(index);
+    if (chosenPokemonIndex !== index) {
+      setChosenPokemonIndex(index);
     }
 
     if (winGame === null) {
-      setMyPokemonHealth(MyPokemon[index].stats[0].base_stat);
-      setEnemyPokemonHealth(pokemon.stats[0].base_stat);
+      setChosenPokemonHealth(chosenPokemon[index].stats[0].base_stat);
+      setPokemonEncounterHealth(pokemonEncounter.stats[0].base_stat);
     }
 
     //console.log(SelectedPokemon)
@@ -127,10 +127,10 @@ function App() {
         let health;
         let random = Math.floor(Math.random() * 38 + 217);
 
-        if (yourTurn) {
-          health = enemyPokemonHealth;
+        if (myTurn) {
+          health = pokemonEncounterHealth;
         } else {
-          health = myPokemonHealth;
+          health = chosenPokemonHealth;
         }
 
         console.log(health);
@@ -143,51 +143,53 @@ function App() {
         let newHealth = health - formula;
         console.log(newHealth);
 
-        if (yourTurn) {
-          setEnemyPokemonHealth(newHealth);
+        if (myTurn) {
+          setPokemonEncounterHealth(newHealth);
           if (newHealth <= 0) {
             setWinGame("noi");
-            userPokemons.push("https://pokeapi.co/api/v2/pokemon/"+pokemon.name)
-            setUserPokemons([...new Set(userPokemons)])
-            setNoPokemon(true);
-            setClickState(true);
+            pokemonInventory.push(
+              "https://pokeapi.co/api/v2/pokemon/" + pokemonEncounter.name
+            );
+            setPokemonInventory([...new Set(pokemonInventory)]);
+            setNoPokemonSelected(true);
+            setLocationClicked(true);
             setWinGame(null);
-            setSelectedPokemon(null);
-            setMyPokemon([]);
+            setChosenPokemonIndex(null);
+            setChosenPokemon([]);
           }
         } else {
-          setMyPokemonHealth(newHealth);
+          setChosenPokemonHealth(newHealth);
           if (newHealth <= 0) {
             setWinGame("voi");
-            setNoPokemon(true);
-            setClickState(true);
+            setNoPokemonSelected(true);
+            setLocationClicked(true);
             setWinGame(null);
-            setSelectedPokemon(null);
-            setMyPokemon([]);
+            setChosenPokemonIndex(null);
+            setChosenPokemon([]);
           }
         }
 
-        setYourTurn(!yourTurn);
+        setMyTurn(!myTurn);
       }, 500);
     }
   }
 
   console.log(winGame);
-  console.log(userPokemons)
+  console.log(pokemonInventory);
   return (
     <div className="App">
-      {clicked ? (
+      {locationClicked ? (
         <NextAndPrevButton
-          nextHendle={() => setLinkLocation(locations.next)}
-          prevHendle={() => setLinkLocation(locations.previous)}
+          nextHendle={() => setLinkLocation(locationsData.next)}
+          prevHendle={() => setLinkLocation(locationsData.previous)}
         />
       ) : (
         ""
       )}
 
-      {clicked ? (
-        locations &&
-        locations.results.map((location, index) => (
+      {locationClicked ? (
+        locationsData &&
+        locationsData.results.map((location, index) => (
           <ReadLocation
             name={location.name}
             clickFunction={() => a(location.url)}
@@ -195,14 +197,14 @@ function App() {
             key={index}
           />
         ))
-      ) : NoPokemon ? (
+      ) : noPokemonSelected ? (
         <div>
           <ScreenPokemon
-            photo={pokemon.sprites.other.dream_world.front_default}
-            name={pokemon.name}
+            photo={pokemonEncounter.sprites.other.dream_world.front_default}
+            name={pokemonEncounter.name}
           />
-          {SelectedPokemon === null ? (
-            MyPokemon.map((pokemon, index) => (
+          {chosenPokemonIndex === null ? (
+            chosenPokemon.map((pokemon, index) => (
               <OurPokemons
                 PokemonName={pokemon.name}
                 PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
@@ -213,23 +215,23 @@ function App() {
           ) : (
             <div>
               <OurPokemons
-                PokemonName={MyPokemon[SelectedPokemon].name}
+                PokemonName={chosenPokemon[chosenPokemonIndex].name}
                 PokemonPhoto={
-                  MyPokemon[SelectedPokemon].sprites.other.dream_world
+                  chosenPokemon[chosenPokemonIndex].sprites.other.dream_world
                     .front_default
                 }
               />
-              {yourTurn && yourTurn !== null
-                ? attack(MyPokemon[SelectedPokemon], pokemon)
-                : attack(pokemon, MyPokemon[SelectedPokemon])}
+              {myTurn && myTurn !== null
+                ? attack(chosenPokemon[chosenPokemonIndex], pokemonEncounter)
+                : attack(pokemonEncounter, chosenPokemon[chosenPokemonIndex])}
             </div>
           )}
         </div>
       ) : (
         <NoPokemonAvailable
           backHandle={() => {
-            setNoPokemon(true);
-            setClickState(true);
+            setNoPokemonSelected(true);
+            setLocationClicked(true);
           }}
         />
       )}
