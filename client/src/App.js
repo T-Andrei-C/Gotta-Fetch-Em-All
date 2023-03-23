@@ -13,169 +13,127 @@ function App() {
   const [locationsData, setLocationsData] = useState(null);
   const [pokemonEncounter, setPokemonEncounter] = useState([]);
   const [locationClicked, setLocationClicked] = useState(true);
-  const [noPokemonSelected, setNoPokemonSelected] = useState(true);
+  const [pokemonFound, setPokemonFound] = useState(true);
   const [chosenPokemon, setChosenPokemon] = useState([]);
   const [chosenPokemonIndex, setChosenPokemonIndex] = useState(null);
   const [myTurn, setMyTurn] = useState(true);
   const [pokemonEncounterHealth, setPokemonEncounterHealth] = useState(null);
   const [chosenPokemonHealth, setChosenPokemonHealth] = useState(null);
-  const [winGame, setWinGame] = useState(null);
   const [pokemonInventory, setPokemonInventory] = useState([
     "https://pokeapi.co/api/v2/pokemon/meowth",
     "https://pokeapi.co/api/v2/pokemon/charizard",
     "https://pokeapi.co/api/v2/pokemon/raichu",
   ]);
+  const attackDelay = 1;
 
-  const FetchPokemon = async (url) => {
-    let data = await fetch(url);
-    let data2 = await data.json();
-    //console.log(data2)
-    //setMyPokemon(data2);
-    return data2;
-  }
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const response = await fetch(linkLocation);
+        const data = await response.json();
+        setLocationsData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLocation();
+  }, [linkLocation]);
 
-  async function locationInfo(link) {
+  const fetchPokemon = async (url) => {
     try {
-      const response = await fetch(link);
-      const data = await response.json();
-      // console.log(data.areas[Math.floor(Math.random() * data.areas.length)].url)
-      if (data.areas.length > 0) {
-        return data.areas[Math.floor(Math.random() * data.areas.length)].url;
-      } else setNoPokemonSelected(false);
-
-      // return data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  async function pokemonInfo(link) {
-    try {
-      const response = await fetch(link);
+      const response = await fetch(url);
       const data = await response.json();
       return data;
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  useEffect(() => {
-    async function fetchLocation() {
-      try {
-        const response = await fetch(linkLocation);
-        const data = await response.json();
-        //   console.log(data);
-        setLocationsData(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchLocation();
-  }, [linkLocation]);
-
-  const clickHandle = async (link) => {
+  const getAreaData = async (link) => {
     try {
       const response = await fetch(link);
       const data = await response.json();
-      //console.log(data.pokemon_encounters.length);
-      if (data.pokemon_encounters.length > 0) {
-        pokemonInventory.map(async (pokemon) => {
-          let data = await FetchPokemon(pokemon);
-          chosenPokemon.push(data);
-          //datePokemoni.push(MyPokemon)
-          setChosenPokemon([...chosenPokemon]);
-        });
-
-        return data.pokemon_encounters[
-          Math.floor(Math.random() * data.pokemon_encounters.length)
-        ].pokemon.url;
-      } else setNoPokemonSelected(false);
+      if (data.areas.length > 0) {
+        return data.areas[Math.floor(Math.random() * data.areas.length)].url;
+      } else setPokemonFound(false);
     } catch (error) {
       console.error(error);
     }
-
-    //console.log("https://pokeapi.co/api/v2/location-area/" + e.target.id);
   };
-  // console.log(pokemon.sprites)
 
-  const a = async (location) => {
-    const l = await locationInfo(location);
-    // await locationInfo(location)
-    const b = await clickHandle(l);
-    const z = await pokemonInfo(b);
-    setPokemonEncounter(z);
+  const locationClickHandler = async (link) => {
+    try {
+      const response = await fetch(link);
+      const data = await response.json();
+      if (data.pokemon_encounters.length > 0) {
+        pokemonInventory.map(async (pokemon) => {
+          const pokemonData = await fetchPokemon(pokemon);
+          chosenPokemon.push(pokemonData);
+          setChosenPokemon([...chosenPokemon]);
+        });
+        return data.pokemon_encounters[
+          Math.floor(Math.random() * data.pokemon_encounters.length)
+        ].pokemon.url;
+      } else setPokemonFound(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchMaster = async (locationUrl) => {
+    const locationData = await getAreaData(locationUrl);
+    const clickHandlerData = await locationClickHandler(locationData);
+    const pokemonEncounterData = await fetchPokemon(clickHandlerData);
+    setPokemonEncounter(pokemonEncounterData);
     setLocationClicked(false);
   };
 
-  function MyPokemonClickHandler(index) {
+  const chosenPokemonClickHandler = (index) => {
     if (chosenPokemonIndex !== index) {
       setChosenPokemonIndex(index);
     }
+    setChosenPokemonHealth(chosenPokemon[index].stats[0].base_stat);
+    setPokemonEncounterHealth(pokemonEncounter.stats[0].base_stat);
+  };
 
-    if (winGame === null) {
-      setChosenPokemonHealth(chosenPokemon[index].stats[0].base_stat);
-      setPokemonEncounterHealth(pokemonEncounter.stats[0].base_stat);
-    }
+  const resetBoard = () => {
+    setPokemonFound(true);
+    setLocationClicked(true);
+    setChosenPokemonIndex(null);
+    setChosenPokemon([]);
+  };
 
-    //console.log(SelectedPokemon)
-  }
+  const attackAlgorithm = (attackingPokemon, defendingPokemon) => {
+    setTimeout(() => {
+      const baseDamage = attackingPokemon.stats[1].base_stat;
+      const defense = defendingPokemon.stats[2].base_stat;
+      const randomValue = Math.floor(Math.random() * 38 + 217);
+      const trueDamage = Math.floor(
+        ((((2 / 5 + 2) * baseDamage * 60) / defense / 50 + 2) * randomValue) /
+          255
+      );
+      const health = myTurn ? pokemonEncounterHealth : chosenPokemonHealth;
+      const healthAfterAttack = health - trueDamage;
 
-  function attack(attackingPokemon, defendingPokemon) {
-    if (winGame === null) {
-      setTimeout(() => {
-        let damage = attackingPokemon.stats[1].base_stat;
-        let defense = defendingPokemon.stats[2].base_stat;
-        let health;
-        let random = Math.floor(Math.random() * 38 + 217);
-
-        if (myTurn) {
-          health = pokemonEncounterHealth;
-        } else {
-          health = chosenPokemonHealth;
+      if (myTurn) {
+        setPokemonEncounterHealth(healthAfterAttack);
+        if (healthAfterAttack <= 0) {
+          pokemonInventory.push(
+            "https://pokeapi.co/api/v2/pokemon/" + pokemonEncounter.name
+          );
+          setPokemonInventory([...new Set(pokemonInventory)]);
+          resetBoard();
         }
-
-        console.log(health);
-
-        let formula = Math.floor(
-          ((((2 / 5 + 2) * damage * 60) / defense / 50 + 2) * random) / 255
-        );
-
-        console.log(formula);
-        let newHealth = health - formula;
-        console.log(newHealth);
-
-        if (myTurn) {
-          setPokemonEncounterHealth(newHealth);
-          if (newHealth <= 0) {
-            setWinGame("noi");
-            pokemonInventory.push(
-              "https://pokeapi.co/api/v2/pokemon/" + pokemonEncounter.name
-            );
-            setPokemonInventory([...new Set(pokemonInventory)]);
-            setNoPokemonSelected(true);
-            setLocationClicked(true);
-            setWinGame(null);
-            setChosenPokemonIndex(null);
-            setChosenPokemon([]);
-          }
-        } else {
-          setChosenPokemonHealth(newHealth);
-          if (newHealth <= 0) {
-            setWinGame("voi");
-            setNoPokemonSelected(true);
-            setLocationClicked(true);
-            setWinGame(null);
-            setChosenPokemonIndex(null);
-            setChosenPokemon([]);
-          }
+      } else {
+        setChosenPokemonHealth(healthAfterAttack);
+        if (healthAfterAttack <= 0) {
+          resetBoard();
         }
+      }
+      setMyTurn(!myTurn);
+    }, attackDelay);
+  };
 
-        setMyTurn(!myTurn);
-      }, 500);
-    }
-  }
-
-  console.log(winGame);
-  console.log(pokemonInventory);
   return (
     <div className="App">
       {locationClicked ? (
@@ -192,12 +150,12 @@ function App() {
         locationsData.results.map((location, index) => (
           <ReadLocation
             name={location.name}
-            clickFunction={() => a(location.url)}
+            clickFunction={() => fetchMaster(location.url)}
             id={index + 1}
             key={index}
           />
         ))
-      ) : noPokemonSelected ? (
+      ) : pokemonFound ? (
         <div>
           <ScreenPokemon
             photo={pokemonEncounter.sprites.other.dream_world.front_default}
@@ -209,7 +167,7 @@ function App() {
                 PokemonName={pokemon.name}
                 PokemonPhoto={pokemon.sprites.other.dream_world.front_default}
                 key={pokemon.name}
-                MyPokemonClick={() => MyPokemonClickHandler(index)}
+                MyPokemonClick={() => chosenPokemonClickHandler(index)}
               />
             ))
           ) : (
@@ -222,15 +180,21 @@ function App() {
                 }
               />
               {myTurn && myTurn !== null
-                ? attack(chosenPokemon[chosenPokemonIndex], pokemonEncounter)
-                : attack(pokemonEncounter, chosenPokemon[chosenPokemonIndex])}
+                ? attackAlgorithm(
+                    chosenPokemon[chosenPokemonIndex],
+                    pokemonEncounter
+                  )
+                : attackAlgorithm(
+                    pokemonEncounter,
+                    chosenPokemon[chosenPokemonIndex]
+                  )}
             </div>
           )}
         </div>
       ) : (
         <NoPokemonAvailable
           backHandle={() => {
-            setNoPokemonSelected(true);
+            setPokemonFound(true);
             setLocationClicked(true);
           }}
         />
