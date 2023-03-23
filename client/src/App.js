@@ -11,7 +11,7 @@ import LoseGame from "./Components/LoseGame";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const pokemonInevntoryList = [
+  const pokemonInventoryList = [
     "charmander",
     "diglett",
     "meowth",
@@ -34,7 +34,7 @@ function App() {
   const [chosenPokemonHealth, setChosenPokemonHealth] = useState(null);
   const [gameWon, setGameWon] = useState(null);
   const [pokemonInventory, setPokemonInventory] = useState(
-    pokemonInevntoryList.map(
+    pokemonInventoryList.map(
       (pokemon) =>
         (pokemon = "https://pokeapi.co/api/v2/pokemon/" + `${pokemon}`)
     )
