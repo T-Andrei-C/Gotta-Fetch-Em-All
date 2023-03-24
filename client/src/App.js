@@ -8,17 +8,17 @@ import PokemonsInventory from "./Components/PokemonsInventory";
 import ChosenPokemon from "./Components/ChosenPokemon";
 import WinGame from "./Components/WinGame";
 import LoseGame from "./Components/LoseGame";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const pokemonInventoryList = [
+  const pokemonInevntoryList = [
     "charmander",
     "diglett",
     "meowth",
     "charizard",
     "raichu",
   ];
-  const attackDelay = 1;
+  const attackDelay = 500;
 
   const [linkLocation, setLinkLocation] = useState(
     "https://pokeapi.co/api/v2/location"
@@ -34,7 +34,7 @@ function App() {
   const [chosenPokemonHealth, setChosenPokemonHealth] = useState(null);
   const [gameWon, setGameWon] = useState(null);
   const [pokemonInventory, setPokemonInventory] = useState(
-    pokemonInventoryList.map(
+    pokemonInevntoryList.map(
       (pokemon) =>
         (pokemon = "https://pokeapi.co/api/v2/pokemon/" + `${pokemon}`)
     )
@@ -159,7 +159,7 @@ function App() {
   return (
     <div className="App">
       {gameWon === null ? (
-        <div>
+        <div className="prevAndNextBtn">
           {locationClicked ? (
             <NextAndPrevButton
               nextHendle={() => setLinkLocation(locationsData.next)}
@@ -170,7 +170,7 @@ function App() {
           )}
 
           {locationClicked ? (
-            <div className="row row-cols-4">
+            <div className="locations">
               {locationsData &&
                 locationsData.results.map((location, index) => (
                   <LocationButton
@@ -185,13 +185,14 @@ function App() {
               <PokemonEncounter
                 photo={pokemonEncounter.sprites.other.dream_world.front_default}
                 name={pokemonEncounter.name}
+                damagedHealth={pokemonEncounter.stats[0].base_stat}
                 health={
                   chosenPokemonIndex !== null
                     ? pokemonEncounterHealth
                     : pokemonEncounter.stats[0].base_stat
                 }
               />
-              <div className="row row-cols-5">
+              <div className="ourPokemons">
                 {chosenPokemonIndex === null ? (
                   chosenPokemon.map((pokemon, index) => (
                     <PokemonsInventory
@@ -209,13 +210,14 @@ function App() {
                     />
                   ))
                 ) : (
-                  <div>
+                  <div className="chosenPoke">
                     <ChosenPokemon
                       pokemonName={chosenPokemon[chosenPokemonIndex].name}
                       pokemonPhoto={
                         chosenPokemon[chosenPokemonIndex].sprites.other
                           .dream_world.front_default
                       }
+                      damagedHealth={chosenPokemon[chosenPokemonIndex].stats[0].base_stat}
                       health={chosenPokemonHealth}
                     />
                     {myTurn && myTurn !== null
