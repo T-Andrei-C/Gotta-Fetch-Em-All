@@ -6,8 +6,8 @@ function locationButton(props) {
   const clickFunction = props.clickFunction;
 
   return (
-    <div className="col">
-      <button className="btn btn-light my-3" onClick={clickFunction}>
+    <div className="location">
+      <button className="locationBtn" onClick={clickFunction}>
         {location}
       </button>
     </div>
