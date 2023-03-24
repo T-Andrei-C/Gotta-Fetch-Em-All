@@ -1,14 +1,16 @@
 function chosenPokemon(props) {
-    const pokemonName = props.pokemonName;
-    const pokemonPhoto = props.pokemonPhoto;
-    const health = props.health
-    return (
-      <div>
-        <label>{pokemonName}</label>
-        <img src={pokemonPhoto} />
-        <p>Health: {health}</p>
-      </div>
-    );
-  }
-  
-  export default chosenPokemon;
+  const pokemonName = props.pokemonName;
+  const pokemonPhoto = props.pokemonPhoto;
+  const health = props.health
+  const damagedHealth = props.damagedHealth;
+  return (
+    <div>
+      <h2>{pokemonName}</h2>
+      <img src={pokemonPhoto} />
+      <h3>Health: {health}</h3>
+      <progress id="file" value={health} max={damagedHealth}></progress>
+    </div>
+  );
+}
+
+export default chosenPokemon;
