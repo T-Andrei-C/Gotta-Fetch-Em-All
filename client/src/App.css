@@ -2,17 +2,113 @@
   text-align: center;
 }
 
-#root {
-  background-color: rgb(54, 53, 53);
-}
-html {
-  background-color: rgb(54, 53, 53);
-}
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+
+.locations {
+  display:grid;
+  grid-template-columns: auto auto auto;
+  margin-top: 78px;
+  column-gap: 30px;
+  row-gap: 30px;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.locationBtn {
+  font-size: 25px;
+  border-radius: 10px;
+  border: 5px solid #61dafb;; 
+  cursor: pointer;
+  transition: font-size 0.5s;
+}
+
+.locationBtn:hover {
+  font-size: 35px;
+  background-color: #61dafb;
+}
+
+.prevAndNextBtn {
+  margin-top: 30px;
+}
+
+.prevBtn, .nextBtn {
+  font-size: 25px;
+  border-radius: 10px;
+  border: 5px solid #61dafb;;
+  cursor: pointer;
+}
+
+.nextBtn {
+  margin-left: 200px;
+}
+
+.encounterPokemon {
+  border: 5px solid rgb(228, 37, 37);
+  position: absolute;
+  bottom: 250px;
+  border-radius: 30px;
+  right: 200px;
+  background-image: linear-gradient(rgb(228, 37, 37), rgb(231, 179, 179));
+}
+
+img {
+  width: 300px;
+  height: 240px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ourPokemons {
+  display:grid;
+  grid-template-columns: auto auto auto;
+  margin-top: 400px;
+  column-gap: 30px;
+  row-gap: 30px;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.chosenPoke {
+  position: absolute;
+  top: 30px;
+  /* bottom: 30px; */
+  border: 5px solid rgb(37, 228, 101);
+  border-radius: 30px;
+  left: 200px;
+  background-image: linear-gradient(rgb(37, 228, 101), rgb(194, 233, 207));
+}
+
+.versus {
+  position: absolute;
+  bottom: 330px;
+  left: 530px;
+}
+
+.inventory {
+  margin-top: 35px;
+  /* bottom: 30px; */
+  border: 5px solid rgb(37, 228, 101);
+  border-radius: 30px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 30px;
+  background-image: linear-gradient(rgb(37, 228, 101), rgb(194, 233, 207));
+  cursor: pointer;
+}
+
+.loseGame, .winGame, .noPoke{
+  font-size: 30px;
+  margin-top: 30px;
+}
+
+#hpEncounter {
+  background-color: red;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -20,7 +116,7 @@ html {
   }
 }
 
-.App-header {
+/* .App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -29,7 +125,7 @@ html {
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
+} */
 
 .App-link {
   color: #61dafb;
