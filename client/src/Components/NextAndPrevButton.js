@@ -2,8 +2,8 @@ function NextAndPrevButton(props) {
 
   return (
     <div>
-      <button onClick={props.prevHendle}>Previous</button>
-      <button onClick={props.nextHendle}>Next</button>
+      <button className="prevBtn" onClick={props.prevHendle}>Previous</button>
+      <button className="nextBtn" onClick={props.nextHendle}>Next</button>
     </div>
 
   );
