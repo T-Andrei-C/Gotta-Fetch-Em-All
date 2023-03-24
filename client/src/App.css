@@ -48,7 +48,7 @@
 .encounterPokemon {
   border: 5px solid rgb(228, 37, 37);
   position: absolute;
-  bottom: 250px;
+  bottom: 230px;
   border-radius: 30px;
   right: 200px;
   background-image: linear-gradient(rgb(228, 37, 37), rgb(231, 179, 179));
@@ -105,7 +105,7 @@ img {
   margin-top: 30px;
 }
 
-#hpEncounter {
+#hpEncounter, #hpChoosenPoke {
   background-color: red;
 }
 

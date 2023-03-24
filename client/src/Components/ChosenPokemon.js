@@ -8,7 +8,7 @@ function chosenPokemon(props) {
       <h2>{pokemonName}</h2>
       <img src={pokemonPhoto} />
       <h3>Health: {health}</h3>
-      <progress id="file" value={health} max={damagedHealth}></progress>
+      <progress id="hpChoosenPoke" value={health} max={damagedHealth}></progress>
     </div>
   );
 }
